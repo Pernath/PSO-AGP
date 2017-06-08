@@ -18,7 +18,7 @@ class FirstSpec extends FlatSpec {
     * 
     */
   "dentro()" should "decide if point is inside polygon" in {
-    val prueba = new Punto(0.5,0.5)
+    val prueba = new Punto(0.5,0)
     assert(p.dentro(p1))
     assert(p.dentro(p2))
     assert(p.dentro(p3))
@@ -35,5 +35,12 @@ class FirstSpec extends FlatSpec {
     pruebaB = new Punto(0,2)
     assert(!p.interseccion(pruebaA,pruebaB,p.puntos(0),p.puntos(1)))
     assert(!p.interseccion(pruebaA,p.puntos(2),p.puntos(1), p.puntos(2)))
+  }
+
+  "segmento_dentro()" should "decide if line segment lies inside the polygon" in {
+    var extremoA = new Punto(0.25,0.25)
+    var extremoB = new Punto(0.5,0.5)
+    assert(p.segmento_dentro(extremoA,extremoB))
+
   }
 }

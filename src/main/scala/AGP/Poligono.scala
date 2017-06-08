@@ -21,12 +21,18 @@ class Poligono(val puntos: Array[Punto]) {
   }
 
   /** Método para decidir si el segmento de línea que intersecta a y b está completamente dentro de P
-    * @param a el extremo del segmento
-    * @param b el otro extremo del segmento
-    * @return true si se encuentra dentro de todo el polígono, false en caso contrario
+    * @param a punto del guardia
+    * @return true si no intersecta a ninguna arista del polígono y su punto medio está dentro, false en otro caso 
     */
-  def dentro(a: Punto, b:Punto) : Boolean = {
-    return false
+  def segmento_dentro(a: Punto, b: Punto) : Boolean = {
+    var in = false
+    for(i <- 0 to puntos.length-1) {
+      if(i < puntos.length-1)
+        in = in || interseccion(a,b,puntos(i),puntos(i+1))
+      else
+        in = in || interseccion(a,b,puntos(i),puntos(0))
+    }    
+    return !in && dentro(new Punto((a.x+b.x)/2,(a.y+b.y)/2))
   }
 
   /** Método para decidir si un punto q yace sobre un segmento pr
@@ -42,11 +48,12 @@ class Poligono(val puntos: Array[Punto]) {
     return false
   }
 
-  // To find orientation of ordered triplet (p, q, r).
-  // The function returns following values
-  // 0 --> p, q and r are colinear
-  // 1 --> Clockwise
-  // 2 --> Counterclockwise
+  /** Método para decidir la orientación de tres vertices
+    * @param p el primer punto en la tripleta
+    * @param q el segundo punto en la tripleta
+    * @param r el tercer punto en la tripleta
+    * @return 0 si p y q son colineales, 1 si estan en sentido horario, 2 sentido contrario
+    */
   def orientacion(p: Punto, q: Punto, r: Punto): Int = {
     val v = (q.y - p.y) * (r.x - q.x) -
       (q.x - p.x) * (r.y - q.y)
@@ -58,6 +65,9 @@ class Poligono(val puntos: Array[Punto]) {
       return 2
   }
 
+  /** Método para decidir si un conjunto de cuatro vertices son todos distintos
+    * @return true si al menos un par son iguales, false si todos son distintos
+    */
   def comparar(p1: Punto, p2: Punto, p3: Punto, p4: Punto): Boolean = {
     var n = new Array[Punto](4)
     n(0) = p1
@@ -74,37 +84,41 @@ class Poligono(val puntos: Array[Punto]) {
   }
 
 
-  // The main function that returns true if line segment 'p1q1'
-  // and 'p2q2' intersect.
+  /** Método para decidir si hay una intersección entre los segmentos de línea p1q1 y p2q2
+    * @param p1 extremo del segmento p1q1
+    * @param q1 extremo del segmento p1q1
+    * @param p2 extremo del segmento p2q2
+    * @param q2 extremo del segmento p2q2
+    * @return true en caso de que p1q1 intersecte a p2q2
+    */
   def interseccion(p1: Punto, q1: Punto, p2: Punto, q2: Punto): Boolean = {
-    // Find the four orientations needed for general and
-    // special cases
+    //Verificación de compartición de puntos
     if(comparar(p1,q1,p2,q2))
       return false;
+    // orientaci[on para los casos especiales
     val o1 = orientacion(p1, q1, p2)
     val o2 = orientacion(p1, q1, q2)
     val o3 = orientacion(p2, q2, p1)
     val o4 = orientacion(p2, q2, q1)
     
-    // General case
+    // Caso general, intersección 
     if (o1 != o2 && o3 != o4)
       return true
     
-    // Special Cases
-    // p1, q1 and p2 are colinear and p2 lies on segment p1q1
+    /* Casos especiales */
+    // p1, q1 y p2 son colineales y p2 esta sobre el segmento p1q1
     if (o1 == 0 && enSegmento(p1, p2, q1)) return true
     
-    // p1, q1 and p2 are colinear and q2 lies on segment p1q1
+    // p1, q1 and p2 son colineales y q2 esta sobre el segmento p1q1
     if (o2 == 0 && enSegmento(p1, q2, q1)) return true
     
-    // p2, q2 and p1 are colinear and p1 lies on segment p2q2
+    // p2, q2 and p1 son colineales y p1 esta sobre el segmento p2q2
     if (o3 == 0 && enSegmento(p2, p1, q2)) return true
     
-    // p2, q2 and q1 are colinear and q1 lies on segment p2q2
+    // p2, q2 and q1 son colineales y q1 esta sobre el segmento p2q2
     if (o4 == 0 && enSegmento(p2, q1, q2)) return true
     
-     //
-    return false // Doesn't fall in any of the above cases
+    return false // Ninguno de los casos especiales ni el general, no intersectan
   }
 
 
