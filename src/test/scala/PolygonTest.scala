@@ -41,6 +41,7 @@ class FirstSpec extends FlatSpec {
     var extremoA = new Punto(0.25,0.25)
     var extremoB = new Punto(0.5,0.5)
     assert(p.segmento_dentro(extremoA,extremoB))
-
+    extremoA = new Punto(-13,-12)
+    assert(!p.segmento_dentro(extremoA,extremoB))
   }
 }

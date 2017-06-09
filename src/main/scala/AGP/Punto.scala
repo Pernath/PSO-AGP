@@ -13,9 +13,7 @@ class Punto(val x: Double, val y: Double) {
 
   override def equals(o: Any): Boolean = {    
     var otro = o.asInstanceOf[Punto];
-    if(otro.x == x && otro.y == y)
-      return true
-    return false
+    return otro.x == x && otro.y == y
   }
 
   override def toString(): String = {
