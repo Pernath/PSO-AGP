@@ -36,7 +36,7 @@ class SecondSpec extends FlatSpec {
     * 
     */
   "run()" should "resolve for square" in {
-    var func = new FuncionDeCosto(w)
+    var func = new FuncionDeCosto(p)
     var gen = new GeneradorVerificador(1,func)
     var cterm = new CTerminacion(100)
     var bpso = new BPSO(2,100,2.0,2.0,2.0,gen,cterm)
