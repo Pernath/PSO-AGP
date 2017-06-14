@@ -48,11 +48,15 @@ class GeneradorVerificador(var semilla: Int, val func: FuncionDeCosto) {
     * mejor posición de ser necesario
     * @param p la particula a evaluar
     */
-  def evalua(p: Particula) {
+  def evalua(p: Particula): Boolean = {
+    var mejora = false
     var nuevoC = func.eval(p.guardias)
-    if(nuevoC._1 < p.costo)
+    if(nuevoC._1 < p.costo) {
+      mejora = true
       p.mejorPos = p.guardias.clone
+    }
     p.costo = nuevoC._1
     p.factible = nuevoC._2
+    return mejora
   }
 }

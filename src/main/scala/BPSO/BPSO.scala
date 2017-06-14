@@ -46,9 +46,12 @@ class BPSO(var seed: Int, var size: Int, var omega: Double, var phi: Double ,var
       else
         particula.guardias(i) = false
     }
-    gen.evalua(particula) //condicion de mejora
-    if(particula.costo < enjambre.mejor.costo) // agregar condicion de mejora ??
-      enjambre.mejor = particula
+    var mejora = gen.evalua(particula) //condicion de mejora
+
+    if(mejora && particula.costo < enjambre.mejor.costo) { // agregar condicion de mejora ??
+      println("Mejora costo: "+particula.costo)
+      enjambre.mejor = new Particula(particula.guardias.clone(), particula.costo, particula.factible)
+    }
     enjambre.particulas(i) = particula
   }
 

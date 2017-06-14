@@ -14,10 +14,23 @@ class Poligono(val puntos: Array[Punto]) {
     */
   def dentro(punto: Punto) : Boolean = {
     val l = puntos.length
-    for(i <- 0 to l-1)
+    for(i <- 0 to l-1){
+
       if(prod_cruz(puntos((i+1)%l).resta(puntos(i)),punto.resta(puntos(i))) > 0 )
         return false
+    }
     return true
+    /*
+     val l = puntos.length
+     var b = false
+     for(i <- 0 to l-1){
+     if(enSegmento(puntos(i),punto,puntos((i+1)%l)))
+     b = b||true
+     if(prod_cruz(puntos((i+1)%l).resta(puntos(i)),punto.resta(puntos(i))) > 0 )
+     b = b||false
+     }
+     return b
+     */
   }
 
   /** Método para decidir si el segmento de línea que intersecta a y b está completamente dentro de P
@@ -32,7 +45,7 @@ class Poligono(val puntos: Array[Punto]) {
       else
         in = in || interseccion(a,b,puntos(i),puntos(0))
     }    
-    return !in && dentro(new Punto((a.x+b.x)/2,(a.y+b.y)/2))
+    return !in && dentro(new Punto((a.x+b.x)/2,(a.y+b.y)/2)) //actually &&
   }
 
   /** Método para decidir si un punto q yace sobre un segmento pr
@@ -66,6 +79,7 @@ class Poligono(val puntos: Array[Punto]) {
   }
 
   /** Método para decidir si un conjunto de cuatro vertices son todos distintos
+    * NOOOTAA: Esto es extraño, hay comparaciones innecesarias... REVISAR
     * @return true si al menos un par son iguales, false si todos son distintos
     */
   def comparar(p1: Punto, p2: Punto, p3: Punto, p4: Punto): Boolean = {

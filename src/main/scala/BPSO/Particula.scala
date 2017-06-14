@@ -8,6 +8,13 @@ class Particula(var guardias: Array[Boolean], var velocidad: Array[Double]) {
   var mejorPos: Array[Boolean] = guardias.clone()
   var factible = false
 
+  def this(g: Array[Boolean], c: Double, f: Boolean) {
+    this(g,null)
+    costo = c
+    factible = f
+  }
+
+
   def length(): Int = { return guardias.length }
 
   def get(i: Int): Double = {
