@@ -6,6 +6,10 @@ package BPSO
 class BPSO(var seed: Int, var size: Int, var omega: Double, var phi: Double ,var phi2: Double, val gen: GeneradorVerificador, val cTerminacion: CTerminacion) {
   var enjambre: Enjambre = null
 
+  /** Método de ejecucion
+    * 
+    * 
+    */
   def run() {
     enjambre = gen.genera_poblacion(size)
     while (cTerminacion.continua) {
@@ -25,9 +29,8 @@ class BPSO(var seed: Int, var size: Int, var omega: Double, var phi: Double ,var
     for(i <- 0 to particula.length-1) {
       var vi = particula.velocidad(i)
       particula.velocidad(i) = omega*vi + phi*gen.generador.nextDouble()*(particula.getM(i)-particula.get(i)) + phi2*gen.generador.nextDouble()*(enjambre.mejor.get(i)-particula.get(i))
-      if(particula.velocidad(0) != enjambre.particulas(i).velocidad(0))
-        println("problemas con referencias")//debugging
     }
+    enjambre.particulas(i) = particula
   }
 
   /** Método para actualizar la posición de una partícula
@@ -46,6 +49,7 @@ class BPSO(var seed: Int, var size: Int, var omega: Double, var phi: Double ,var
     gen.evalua(particula) //condicion de mejora
     if(particula.costo < enjambre.mejor.costo) // agregar condicion de mejora ??
       enjambre.mejor = particula
+    enjambre.particulas(i) = particula
   }
 
 

@@ -6,6 +6,7 @@ package BPSO
 class Particula(var guardias: Array[Boolean], var velocidad: Array[Double]) {
   var costo: Double = 0
   var mejorPos: Array[Boolean] = guardias.clone()
+  var factible = false
 
   def length(): Int = { return guardias.length }
 
@@ -26,7 +27,7 @@ class Particula(var guardias: Array[Boolean], var velocidad: Array[Double]) {
     * 
     */
   override def toString(): String = {
-    var s: String = "["
+    var s: String = "Factible: "+factible+"\nCosto: "+costo+"\n["
     for(i <- 0 to guardias.length-2)
       s += guardias(i)+", "
     return s+guardias(guardias.length-1)+"]"
