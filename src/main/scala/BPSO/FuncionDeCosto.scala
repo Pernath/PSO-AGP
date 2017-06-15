@@ -47,7 +47,7 @@ class FuncionDeCosto(var poligono: Poligono) {
     var nV = new Array[Double](poligono.puntos.length)
     var nG = 0.0
     for(i <- 0 to nV.length-1)
-      nV(i) = nV.length+1
+      nV(i) = (nV.length+1)*99
     
     for(i <- 0 to nV.length-1)
       if(pos(i)) {

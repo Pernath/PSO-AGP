@@ -5,6 +5,29 @@ package AGP
   */
 class Poligono(val puntos: Array[Punto]) {
 
+  def maxXY(): (Double,Double) = {
+    var x = puntos(0).x
+    var y = puntos(0).y
+    for(i <- 1 to puntos.length - 1) {
+      if(x < puntos(i).x)
+        x = puntos(i).x
+      if(y < puntos(i).y)
+        y = puntos(i).y     
+    }
+    return (x,y)
+  }
+
+  def minXY(): (Double,Double) = {
+    var x = puntos(0).x
+    var y = puntos(0).y
+    for(i <- 1 to puntos.length - 1) {
+      if(x > puntos(i).x)
+        x = puntos(i).x
+      if(y > puntos(i).y)
+        y = puntos(i).y
+    }
+    return (x,y)
+  }
 
   /** Método para decidir si un punto está dentro del polígono
     * Se supone que están los puntos en orden con las manecillas del reloj
@@ -13,14 +36,52 @@ class Poligono(val puntos: Array[Punto]) {
     * @return boolean true si el punto se encuentra dentro del polígono, false en caso contrario
     */
   def dentro(punto: Punto) : Boolean = {
+    var l = puntos.length
+    var in = false
+    for(i <- 0 to puntos.length - 1) {
+      if(punto.equals(puntos(i)))
+        return true      
+      if(is_between(puntos(i),punto,puntos((i+1)%l))){
+        //if(punto.equals(new Punto(3,2.5)))
+          //println("el joputa llego")        
+        return true
+      }
+    }
+    var min = minXY()
+    var max = maxXY()
+    var minX = min._1
+    var maxX = max._1
+    var minY = min._2
+    var maxY = max._2
+
+    if ( punto.x < minX || punto.x > maxX || punto.y < minY || punto.y > maxY )
+    {
+      return false;
+    }    
+    var inside = false;
+    var j = puntos.length-1
+    for ( i <- 0  to puntos.length-1) {
+      if ( ( puntos( i ).y > punto.y ) != ( puntos( j ).y > punto.y ) &&
+        (punto.x < ( puntos( j ).x - puntos( i ).x ) * ( punto.y - puntos( i ).y ) / ( puntos( j ).y - puntos( i ).y ) + puntos( i ).x))
+      {
+        inside = !inside;
+      }
+      j = i
+    }
+    
+    return inside
+  /*
+      /*
     val l = puntos.length
     for(i <- 0 to l-1){
 
       if(prod_cruz(puntos((i+1)%l).resta(puntos(i)),punto.resta(puntos(i))) > 0 )
         return false
     }
+    
     return true
-    /*
+     */
+    *
      val l = puntos.length
      var b = false
      for(i <- 0 to l-1){
@@ -31,6 +92,14 @@ class Poligono(val puntos: Array[Punto]) {
      }
      return b
      */
+  }
+
+  def distance(a: Punto,b: Punto): Double = {
+    return math.sqrt(math.pow((a.x - b.x),2) + math.pow((a.y - b.y),2))
+  }
+
+  def is_between(a: Punto,c: Punto, b: Punto): Boolean = {
+    return distance(a,c) + distance(c,b) == distance(a,b)
   }
 
   /** Método para decidir si el segmento de línea que intersecta a y b está completamente dentro de P
@@ -45,7 +114,7 @@ class Poligono(val puntos: Array[Punto]) {
       else
         in = in || interseccion(a,b,puntos(i),puntos(0))
     }    
-    return !in && dentro(new Punto((a.x+b.x)/2,(a.y+b.y)/2)) //actually &&
+    return !in && dentro(new Punto((a.x+b.x)/2,(a.y+b.y)/2))
   }
 
   /** Método para decidir si un punto q yace sobre un segmento pr
@@ -143,5 +212,13 @@ class Poligono(val puntos: Array[Punto]) {
     */
   def prod_cruz(a: Punto, b: Punto): Double = {
     return (a.x-b.y)*(a.y-b.x)
+  }
+
+  override def toString(): String = {
+    var out = ""
+    for(i <- 0 to puntos.length-2) {
+      out += puntos(i) + ","
+    }
+    return out + puntos(puntos.length-1)
   }
 }

@@ -35,18 +35,30 @@ class SecondSpec extends FlatSpec {
   /** Para verificar la conexion a la base de datos
     * 
     */
-  "run()" should "resolve for square" in {
+  "run()" should "resolver para rectángulo" in {
     var func = new FuncionDeCosto(p)
     var gen = new GeneradorVerificador(1,func)
     var cterm = new CTerminacion(100)
     var bpso = new BPSO(2,100,2.0,2.0,2.0,gen,cterm)
-    //var bpso = new BPSO(2,1000,0.1,0.1,0.1,gen,cterm)
-    var a = new Array[Boolean](12)
-    for(i <- 0  to a.length-1)
-      a(i) = true
+    //var bpso = new BPSO(2,1000,0.1,0.1,0.1,gen,cterm)    
     bpso.run()
     println(bpso.enjambre.mejor)
     println(toS(func.nVigilantes(bpso.enjambre.mejor.guardias)._1))
+    assert(bpso.enjambre.mejor.factible)
+    //println(toS(func.nVigilantes(a)._1))
+    //println(func.eval(a))
+  }
+
+  "run()" should "resolver para peine" in {
+    var func = new FuncionDeCosto(w)
+    var gen = new GeneradorVerificador(1,func)
+    var cterm = new CTerminacion(100)
+    var bpso = new BPSO(2,100,1.0,1.0,1.0,gen,cterm)
+    //var bpso = new BPSO(2,1000,0.1,0.1,0.1,gen,cterm)
+    bpso.run()
+    println(bpso.enjambre.mejor)
+    println(toS(func.nVigilantes(bpso.enjambre.mejor.guardias)._1))
+    assert(bpso.enjambre.mejor.factible)
     //println(toS(func.nVigilantes(a)._1))
     //println(func.eval(a))
   }
