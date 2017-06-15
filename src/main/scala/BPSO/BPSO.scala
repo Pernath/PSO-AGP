@@ -3,7 +3,7 @@ package BPSO
 /** Clase para modelar la heurística de Optimización por Enjambre de Partículas versión Binaria
   * 
   */
-class BPSO(var seed: Int, var size: Int, var omega: Double, var phi: Double ,var phi2: Double, val gen: GeneradorVerificador, val cTerminacion: CTerminacion) {
+class BPSO(var size: Int, var omega: Double, var phi: Double ,var phi2: Double, val gen: GeneradorVerificador, val cTerminacion: CTerminacion) {
   var enjambre: Enjambre = null
 
   /** Método de ejecucion
@@ -13,6 +13,7 @@ class BPSO(var seed: Int, var size: Int, var omega: Double, var phi: Double ,var
   def run() {
     enjambre = gen.genera_poblacion(size)
     while (cTerminacion.continua) {
+      println(cTerminacion.iter)
       for(i <- 0 to size-1) {
         actualizaV(i)
         actualizaP(i) //aqui ocurrirá la actualización de la mejorPos y la global
