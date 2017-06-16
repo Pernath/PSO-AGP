@@ -1,8 +1,9 @@
 import java.io.{FileNotFoundException, IOException}
 import scala.io.Source
 import scala.collection.mutable.ListBuffer
+import javafx.application.Application
 
-object Main {
+object Main{
 
   val help = "Modo de empleo: <run> <archivo>"
   val bienvenida = "\n\n| Heurísticas de optimización combinatoria  |\n|\t\tProyecto 2\t\t    |\n|\t     Semestre 2017-2\t\t    |\n|\tFacultad de Ciencias UNAM\t    |\n| Autor: Carlos Gerardo Acosta Hernández    |\n\n"
@@ -43,7 +44,7 @@ object Main {
       throw Exception
 
 
-  }*/
+   }*/
   def main(args: Array[String]): Unit = {
     println(bienvenida)
     if(args.length < 1){
@@ -67,6 +68,12 @@ object Main {
     val w = l(3)//omega
     val p1 = l(4)//phi1
     val p2 = l(5)//phi2
-    cont.exec(s,t,mi,w,p1,p2)    
+    cont.exec(s,t,mi,w,p1,p2)
+
+    
+    cont.run
+    var draw = new Draw(cont.bpso.gen.func.poligono, cont.bpso.enjambre.mejor.guardias)
+    //var draw = new Draw(cont.bpso.gen.func.poligono, null)
+    draw.draw()
   }
 }

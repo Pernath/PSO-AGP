@@ -1,7 +1,8 @@
 import BPSO._
 import AGP._
 
-class Controlador(instance: List[List[Double]]) {
+class Controlador(instance: List[List[Double]]) extends Thread {
+  var bpso: BPSO = null
   var poligono = genPoligono(instance)
 
   def genPoligono(instance: List[List[Double]]): Poligono =  {
@@ -17,11 +18,8 @@ class Controlador(instance: List[List[Double]]) {
     var func = new FuncionDeCosto(poligono)
     var gen = new GeneradorVerificador(s,func)
     var cterm = new CTerminacion(mi)
-    var bpso = new BPSO(t,w,p1,p2,gen,cterm)
+    bpso = new BPSO(t,w,p1,p2,gen,cterm)
     //var bpso = new BPSO(2,1000,0.1,0.1,0.1,gen,cterm)    
-    bpso.run()
-    println(bpso.enjambre.mejor)
-    println(toS(func.nVigilantes(bpso.enjambre.mejor.guardias)._1))
   }
 
 
@@ -32,7 +30,11 @@ class Controlador(instance: List[List[Double]]) {
     return s+a(a.length-1)+"]"
   }
 
-
+  override def run() {
+    bpso.run()
+    println(bpso.enjambre.mejor)
+    //println(toS(func.nVigilantes(bpso.enjambre.mejor.guardias)._1))
+  }
 
 
 }
