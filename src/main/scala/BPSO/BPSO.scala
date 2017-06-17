@@ -43,15 +43,15 @@ class BPSO(var size: Int, var omega: Double, var phi: Double ,var phi2: Double, 
       var vi = particula.velocidad(i)
       var sig = 1 / (1+math.pow(math.E,-vi)) //normalizacion
       if(gen.generador.nextDouble() < sig)
-        particula.guardias(i) = true
+        gen.updateP(particula,i,true)
       else
-        particula.guardias(i) = false
+        gen.updateP(particula,i,false)
     }
     var mejora = gen.evalua(particula) //condicion de mejora
 
     if(mejora && particula.costo < enjambre.mejor.costo) { // agregar condicion de mejora ??
       println("Mejora costo: "+particula.costo)
-      enjambre.mejor = new Particula(particula.guardias.clone(), particula.costo, particula.factible)
+      enjambre.mejor = particula.clone
     }
     enjambre.particulas(i) = particula
   }

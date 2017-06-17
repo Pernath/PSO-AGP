@@ -5,15 +5,25 @@ import AGP.Poligono
   * 
   */
 class FuncionDeCosto(var poligono: Poligono) {
+  var matrix: Array[Array[Boolean]] = init()
 
+  def init(): Array[Array[Boolean]] = {
+    var l = poligono.puntos.length
+    var x = Array.ofDim[Boolean](l,l)
+    for(i <- 0 to l-1)
+      for(j <- 0 to l-1)
+        if(i != j)
+          x(i)(j) = poligono.segmento_dentro(poligono.puntos(i),poligono.puntos(j))
+    // no olvidar que i==j debe contarse en nVigilantes
+
+    return x
+  }
 
   /** Método para evaluar una solución 
     * @param pos el arreglo que dice en qué vertices están posicionados los guardias
     */
-  def eval(pos: Array[Boolean]): (Double,Boolean) = {
-    var t = nVigilantes(pos)
-    var nV = t._1
-    var nG = t._2
+  def eval(nV: Array[Double], nG: Double): (Double,Boolean) = {
+    //    var t = nVigilantes(pos)
     var suma = 0.0
     var factible = true
     for(i <- 0 to nV.length-1) {
