@@ -15,8 +15,6 @@ class GeneradorVerificador(var semilla: Int, val func: FuncionDeCosto) {
     val p = func.poligono.puntos.length
     val poblacion = new Enjambre(t)
     var part = part_random(p)
-    println(part)
-    println(part.nV)
     poblacion.particulas(0) = part.clone
     poblacion.mejor = part.clone
     //poblacion.mejor.costo = Double.MaxValue
@@ -57,7 +55,7 @@ class GeneradorVerificador(var semilla: Int, val func: FuncionDeCosto) {
           }
         }
       } else if(vigilantes(i) == 0)
-        vigilantes(i) = (p+1)*99
+        vigilantes(i) = (p+1)*6599
     }
     var particula = new Particula(posicion,velocidad,vigilantes)
     evalua(particula)    
@@ -77,7 +75,7 @@ class GeneradorVerificador(var semilla: Int, val func: FuncionDeCosto) {
         else {
           p.nVigilantes(i) = p.nVigilantes(i) - 1
           if(p.nVigilantes(i) == 0)
-            p.nVigilantes(i) = (p.length+1)*99
+            p.nVigilantes(i) = (p.length+1)*6599
         }
       }
       for(j <- 0 to p.length-1) {
@@ -99,7 +97,7 @@ class GeneradorVerificador(var semilla: Int, val func: FuncionDeCosto) {
             else{
               p.nVigilantes(j) = nv - 1
               if(p.nVigilantes(j) == 0)
-                p.nVigilantes(j) = (p.length+1)*99
+                p.nVigilantes(j) = (p.length+1)*6599
               p.nGuardias -= 1
             }
           }

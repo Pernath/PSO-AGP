@@ -22,19 +22,10 @@ class Controlador(instance: List[List[Double]]) extends Thread {
     //var bpso = new BPSO(2,1000,0.1,0.1,0.1,gen,cterm)    
   }
 
-
-  def toS(a: Array[Double]): String = {
-    var s: String = "["
-    for(i <- 0 to a.length-2)
-      s += a(i)+", "
-    return s+a(a.length-1)+"]"
-  }
-
   override def run() {
     bpso.run()
     println(bpso.enjambre.mejor)
-    println(bpso.enjambre.mejor.nV)
-    //println(toS(func.nVigilantes(bpso.enjambre.mejor.guardias)._1))
+    //println(bpso.enjambre.mejor.nV)
   }
 
 

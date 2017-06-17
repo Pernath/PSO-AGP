@@ -72,8 +72,8 @@ object Main{
 
     
     cont.run
-    var draw = new Draw(cont.bpso.gen.func.poligono, cont.bpso.enjambre.mejor.guardias)
+    var draw = new Draw2(cont.bpso.gen.func.poligono, cont.bpso.enjambre.mejor.guardias)
     //var draw = new Draw(cont.bpso.gen.func.poligono, null)
-    draw.draw()
+    draw.write(args(0))
   }
 }
