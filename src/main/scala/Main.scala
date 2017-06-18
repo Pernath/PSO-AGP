@@ -84,5 +84,6 @@ object Main{
     var draw = new Draw2(cont.bpso.gen.func.poligono, cont.bpso.enjambre.mejor.guardias)
     //var draw = new Draw(cont.bpso.gen.func.poligono, null)
     draw.write(args(0))
+    println("Configuración resultante para "+args(0)+" en instances/solutions/")
   }
 }

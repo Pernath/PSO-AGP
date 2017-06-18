@@ -44,7 +44,7 @@ class Particula(var guardias: Array[Boolean], var velocidad: Array[Double], var 
     * 
     */
   override def toString(): String = {
-    var s: String = "Factible: "+factible+"\nCosto: "+costo+"\n"
+    var s: String = "Factible: "+factible+"\nCosto: "+costo
     return s
   }
 
