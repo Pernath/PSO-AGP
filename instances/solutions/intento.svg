@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE svg>
+<svg width="885.7142857142857" height="600.0"><rect width="885.7142857142857" height="600.0" style="fill:white" />
+<line x1="50.0" y1="514.2857142857142" x2="85.71428571428572" y2="550.0" style="stroke:black;stroke-width:4" />
+<ellipse cx="50.0" cy="514.2857142857142" rx="5" ry="5" style="fill:red;stroke:black;stroke-width:1" />
+<line x1="85.71428571428572" y1="550.0" x2="157.14285714285714" y2="550.0" style="stroke:black;stroke-width:4" />
+<line x1="157.14285714285714" y1="550.0" x2="192.85714285714286" y2="514.2857142857142" style="stroke:black;stroke-width:4" />
+<line x1="192.85714285714286" y1="514.2857142857142" x2="300.0" y2="514.2857142857142" style="stroke:black;stroke-width:4" />
+<line x1="300.0" y1="514.2857142857142" x2="300.0" y2="550.0" style="stroke:black;stroke-width:4" />
+<ellipse cx="300.0" cy="514.2857142857142" rx="5" ry="5" style="fill:red;stroke:black;stroke-width:1" />
+<line x1="300.0" y1="550.0" x2="335.7142857142857" y2="550.0" style="stroke:black;stroke-width:4" />
+<line x1="335.7142857142857" y1="550.0" x2="335.7142857142857" y2="514.2857142857142" style="stroke:black;stroke-width:4" />
+<ellipse cx="335.7142857142857" cy="550.0" rx="5" ry="5" style="fill:red;stroke:black;stroke-width:1" />
+<line x1="335.7142857142857" y1="514.2857142857142" x2="514.2857142857142" y2="514.2857142857142" style="stroke:black;stroke-width:4" />
+<ellipse cx="335.7142857142857" cy="514.2857142857142" rx="5" ry="5" style="fill:red;stroke:black;stroke-width:1" />
+<line x1="514.2857142857142" y1="514.2857142857142" x2="514.2857142857142" y2="121.42857142857144" style="stroke:black;stroke-width:4" />
+<ellipse cx="514.2857142857142" cy="514.2857142857142" rx="5" ry="5" style="fill:red;stroke:black;stroke-width:1" />
+<line x1="514.2857142857142" y1="121.42857142857144" x2="264.2857142857143" y2="121.42857142857144" style="stroke:black;stroke-width:4" />
+<line x1="264.2857142857143" y1="121.42857142857144" x2="264.2857142857143" y2="50.0" style="stroke:black;stroke-width:4" />
+<line x1="264.2857142857143" y1="50.0" x2="550.0" y2="50.0" style="stroke:black;stroke-width:4" />
+<line x1="550.0" y1="50.0" x2="550.0" y2="550.0" style="stroke:black;stroke-width:4" />
+<ellipse cx="550.0" cy="50.0" rx="5" ry="5" style="fill:red;stroke:black;stroke-width:1" />
+<line x1="550.0" y1="550.0" x2="585.7142857142858" y2="550.0" style="stroke:black;stroke-width:4" />
+<ellipse cx="550.0" cy="550.0" rx="5" ry="5" style="fill:red;stroke:black;stroke-width:1" />
+<line x1="585.7142857142858" y1="550.0" x2="621.4285714285714" y2="514.2857142857142" style="stroke:black;stroke-width:4" />
+<line x1="621.4285714285714" y1="514.2857142857142" x2="764.2857142857143" y2="514.2857142857142" style="stroke:black;stroke-width:4" />
+<ellipse cx="621.4285714285714" cy="514.2857142857142" rx="5" ry="5" style="fill:red;stroke:black;stroke-width:1" />
+<line x1="764.2857142857143" y1="514.2857142857142" x2="764.2857142857143" y2="550.0" style="stroke:black;stroke-width:4" />
+<line x1="764.2857142857143" y1="550.0" x2="835.7142857142858" y2="550.0" style="stroke:black;stroke-width:4" />
+<line x1="835.7142857142858" y1="550.0" x2="835.7142857142858" y2="514.2857142857142" style="stroke:black;stroke-width:4" />
+<line x1="835.7142857142858" y1="514.2857142857142" x2="50.0" y2="514.2857142857142" style="stroke:black;stroke-width:4" />
+<ellipse cx="835.7142857142858" cy="514.2857142857142" rx="5" ry="5" style="fill:red;stroke:black;stroke-width:1" />
+</svg>

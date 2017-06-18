@@ -2,6 +2,7 @@ import java.io.{FileNotFoundException, IOException}
 import scala.io.Source
 import scala.collection.mutable.ListBuffer
 import javafx.application.Application
+import scala.util.control.Breaks._
 
 object Main{
 
@@ -68,10 +69,18 @@ object Main{
     val w = l(3)//omega
     val p1 = l(4)//phi1
     val p2 = l(5)//phi2
-    cont.exec(s,t,mi,w,p1,p2)
 
-    
+    var i = 0
+    var n = 100
+    /*while(n > 26 && i < 100) {      
+      cont.exec(i,t,mi,w,p1,p2)
+      cont.run
+      n = cont.bpso.enjambre.mejor.nGuardias
+      i += 1
+  }*/
+    cont.exec(s,t,mi,w,p1,p2)
     cont.run
+    println("Semilla:"+s)
     var draw = new Draw2(cont.bpso.gen.func.poligono, cont.bpso.enjambre.mejor.guardias)
     //var draw = new Draw(cont.bpso.gen.func.poligono, null)
     draw.write(args(0))

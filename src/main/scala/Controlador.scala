@@ -25,7 +25,8 @@ class Controlador(instance: List[List[Double]]) extends Thread {
   override def run() {
     bpso.run()
     println(bpso.enjambre.mejor)
-    //println(bpso.enjambre.mejor.nV)
+    println("# Guardias: "+bpso.enjambre.mejor.nGuardias)
+    //println(bpso.enjambre.mejor.g)
   }
 
 

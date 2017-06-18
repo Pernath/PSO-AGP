@@ -30,7 +30,7 @@ class BPSO(var size: Int, var omega: Double, var phi: Double ,var phi2: Double, 
       var vi = particula.velocidad(i)
       particula.velocidad(i) = omega*vi + phi*gen.generador.nextDouble()*(particula.getM(i)-particula.get(i)) + phi2*gen.generador.nextDouble()*(enjambre.mejor.get(i)-particula.get(i))
     }
-    enjambre.particulas(i) = particula
+    //enjambre.particulas(i) = particula
   }
 
   /** Método para actualizar la posición de una partícula
@@ -38,6 +38,7 @@ class BPSO(var size: Int, var omega: Double, var phi: Double ,var phi2: Double, 
     */
   def actualizaP(i: Int) {
     var particula = enjambre.particulas(i)
+    //println("at first:"+particula.nGuardias)
     for(i <- 0 to particula.length-1){
       var vi = particula.velocidad(i)
       var sig = 1 / (1+math.pow(math.E,-vi)) //normalizacion
@@ -46,6 +47,7 @@ class BPSO(var size: Int, var omega: Double, var phi: Double ,var phi2: Double, 
       else
         gen.updateP(particula,i,false)
     }
+    //println("after:"+particula.nGuardias)
     var mejora = gen.evalua(particula) //condicion de mejora
 
     if(mejora && particula.costo < enjambre.mejor.costo) { // agregar condicion de mejora ??

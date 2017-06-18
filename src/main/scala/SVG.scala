@@ -27,14 +27,18 @@ class Draw2(var pol: Poligono, var guardias: Array[Boolean]){
     var delta1 = s1/(max._1-min._1)
     var delta2 = s2/(max._2-min._2)
 
-    svg += "\n<svg width=\""+s1+"\" height=\""+s2+"\">"
-    svg += "<rect width=\""+s1+"\" height=\""+s2+"\" style=\"fill:white\" />"
+    var omega1 = aug/2
+    var omega2 = aug/2
+    
+
+    svg += "\n<svg width=\""+(s1+aug)+"\" height=\""+(s2+aug)+"\">"
+    svg += "<rect width=\""+(s1+aug)+"\" height=\""+(s2+aug)+"\" style=\"fill:white\" />"
 
     for(i <- 0 to l-1){
-      svg += "\n<line x1=\""+(delta1*(pol.puntos(i).x-min._1))+"\" y1=\""+(s2-(delta2*(pol.puntos(i).y-min._2)))+"\" x2=\""+(delta1*(pol.puntos((i+1)%l).x-min._1))+"\" y2=\""+(s2-(delta2*(pol.puntos((i+1)%l).y-min._2)))+"\" style=\"stroke:black;stroke-width:4\" />"
+      svg += "\n<line x1=\""+(omega1+(delta1*(pol.puntos(i).x-min._1)))+"\" y1=\""+(omega2+(s2-(delta2*(pol.puntos(i).y-min._2))))+"\" x2=\""+(omega1+(delta1*(pol.puntos((i+1)%l).x-min._1)))+"\" y2=\""+(omega2+(s2-(delta2*(pol.puntos((i+1)%l).y-min._2))))+"\" style=\"stroke:black;stroke-width:4\" />"
 
       if(guardias(i))
-        svg += "\n<ellipse cx=\""+(delta1*(pol.puntos(i).x-min._1))+"\" cy=\""+(s2-(delta2*(pol.puntos(i).y-min._2)))+"\" rx=\"5\" ry=\"5\" style=\"fill:red;stroke:black;stroke-width:1\" />"	
+        svg += "\n<ellipse cx=\""+(omega1+(delta1*(pol.puntos(i).x-min._1)))+"\" cy=\""+(omega2+(s2-(delta2*(pol.puntos(i).y-min._2))))+"\" rx=\"5\" ry=\"5\" style=\"fill:red;stroke:black;stroke-width:1\" />"	
 
     }
 
@@ -44,14 +48,14 @@ class Draw2(var pol: Poligono, var guardias: Array[Boolean]){
 
   def write(fNombre: String): Boolean = {
     draw()
-    var pattern = "([A-Za-z/]*)([/]+)([A-Za-z]+).([A-Za-z]+)".r    
+    var pattern = "([A-Za-z0-9/]*)([/]+)([A-Za-z0-9]+).([A-Za-z0-9]+)".r    
     var nombre = ""
     try {
       val pattern(dir,last,nom,ext) = fNombre
       nombre = nom
     } catch {
       case e: Exception =>
-        pattern = "([A-Za-z]+).([A-Za-z]+)".r
+        pattern = "([A-Za-z0-9]+).([A-Za-z0-9]+)".r
         val pattern(nom,ext) = fNombre
         nombre = nom
     }

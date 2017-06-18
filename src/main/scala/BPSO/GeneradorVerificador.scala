@@ -55,9 +55,10 @@ class GeneradorVerificador(var semilla: Int, val func: FuncionDeCosto) {
           }
         }
       } else if(vigilantes(i) == 0)
-        vigilantes(i) = (p+1)*6599
+        vigilantes(i) = (p+1)*99
     }
     var particula = new Particula(posicion,velocidad,vigilantes)
+    particula.setG()
     evalua(particula)    
     return particula
   }
@@ -66,39 +67,46 @@ class GeneradorVerificador(var semilla: Int, val func: FuncionDeCosto) {
     if(p.guardias(i) != b){
       p.guardias(i) = b
       if(p.nVigilantes(i) > p.length) {
-        if(b)
+        if(b){
           p.nVigilantes(i) = 1
+          p.nGuardias += 1
+        } else
+            p.nGuardias -= 1
       }
       else {
-        if(b)
+        if(b) {
           p.nVigilantes(i) = p.nVigilantes(i) + 1
+          p.nGuardias += 1
+        }
         else {
           p.nVigilantes(i) = p.nVigilantes(i) - 1
+          p.nGuardias -= 1
           if(p.nVigilantes(i) == 0)
-            p.nVigilantes(i) = (p.length+1)*6599
+            p.nVigilantes(i) = (p.length+1)*99
         }
       }
+      /* Adyacentes */
       for(j <- 0 to p.length-1) {
         var nv = p.nVigilantes(j)
         if(func.matrix(i)(j)){
           if(nv > p.length) {
             if(b) {
               p.nVigilantes(j) = 1
-              p.nGuardias += 1
+              //p.nGuardias += 1
             }
             else {
-              p.nGuardias -= 1
+              //p.nGuardias -= 1
             }
           } else { //ya alguien le cuidaa
             if(b){
               p.nVigilantes(j) = nv + 1
-              p.nGuardias += 1
+              //p.nGuardias += 1
             }
             else{
               p.nVigilantes(j) = nv - 1
               if(p.nVigilantes(j) == 0)
-                p.nVigilantes(j) = (p.length+1)*6599
-              p.nGuardias -= 1
+                p.nVigilantes(j) = (p.length+1)*99
+              //p.nGuardias -= 1
             }
           }
         }

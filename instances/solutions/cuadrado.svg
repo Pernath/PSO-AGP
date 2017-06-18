@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE svg>
+<svg width="600.0" height="600.0"><rect width="600.0" height="600.0" style="fill:white" />
+<line x1="50.0" y1="550.0" x2="50.0" y2="50.0" style="stroke:black;stroke-width:4" />
+<line x1="50.0" y1="50.0" x2="550.0" y2="50.0" style="stroke:black;stroke-width:4" />
+<line x1="550.0" y1="50.0" x2="550.0" y2="550.0" style="stroke:black;stroke-width:4" />
+<ellipse cx="550.0" cy="50.0" rx="5" ry="5" style="fill:red;stroke:black;stroke-width:1" />
+<line x1="550.0" y1="550.0" x2="50.0" y2="550.0" style="stroke:black;stroke-width:4" />
+</svg>

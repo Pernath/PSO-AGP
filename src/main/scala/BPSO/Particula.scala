@@ -7,21 +7,22 @@ class Particula(var guardias: Array[Boolean], var velocidad: Array[Double], var 
   var costo: Double = 0
   var mejorPos: Array[Boolean] = guardias.clone()
   var factible = false
-  var nGuardias = getG(guardias)
+  var nGuardias = 0
 
   override def clone(): Particula = {
     var p = new Particula(this.guardias.clone, this.velocidad, this.nVigilantes.clone)
     p.costo = this.costo + 0.0 //necesario?
     p.factible = this.factible || false //necesario?
+    p.nGuardias = this.nGuardias
     return p
   }
 
-  def getG(ga: Array[Boolean]): Int = {
+  def setG() {
     var n = 0
-    for(i <- 0 to ga.length-1)
-      if(ga(i))
+    for(i <- 0 to length-1)
+      if(guardias(i))
         n += 1
-    return n
+    nGuardias = n
   }
 
   def length(): Int = { return guardias.length }

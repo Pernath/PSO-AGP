@@ -41,7 +41,7 @@ class Poligono(val puntos: Array[Punto]) {
     for(i <- 0 to puntos.length - 1) {
       if(punto.equals(puntos(i)))
         return true      
-      if(is_between(puntos(i),punto,puntos((i+1)%l))){
+      if(estaDentro(puntos(i),punto,puntos((i+1)%l))){
         //if(punto.equals(new Punto(3,2.5)))
           //println("el joputa llego")        
         return true
@@ -94,12 +94,12 @@ class Poligono(val puntos: Array[Punto]) {
      */
   }
 
-  def distance(a: Punto,b: Punto): Double = {
+  def distancia(a: Punto,b: Punto): Double = {
     return math.sqrt(math.pow((a.x - b.x),2) + math.pow((a.y - b.y),2))
   }
 
-  def is_between(a: Punto,c: Punto, b: Punto): Boolean = {
-    return distance(a,c) + distance(c,b) == distance(a,b)
+  def estaDentro(a: Punto,c: Punto, b: Punto): Boolean = {
+    return distancia(a,c) + distancia(c,b) == distancia(a,b)
   }
 
   /** Método para decidir si el segmento de línea que intersecta a y b está completamente dentro de P
