@@ -12,10 +12,14 @@
 \usepackage{wasysym}
 \usepackage{listings}
 \usepackage{graphicx}
+\usepackage{pmboxdraw}
 \usepackage{hyperref}
+\usepackage{multicol}
+\usepackage{float}
 \usepackage[ruled]{algorithm2e}
 \renewcommand{\algorithmcfname}{ALGORITHM}
-%\usepackage{graphicx}
+\usepackage{graphicx}
+\graphicspath { {media/} }
 
 %Preambulo
 \title{Proyecto 2:\\ Implementación de la Optimización por enjambre de particulas para el Problema de la galería de arte }
@@ -96,9 +100,9 @@ El algoritmo siguiente describe el funcionamiento general de la heurística, por
   \caption{Particle Swarm Optimization (PSO)}
 \end{algorithm}
 
-Aquí vale la pena señalar que $U$ es un generador de números pseudoaleatorios entre [0,1],
+Aquí vale la pena señalar que $U$ es un generador de números pseudoaleatorios entre [0,1] $\in \mathbb{R}$,
 $b_i$ es la mejor posición de la i-ésima partícula del enjambre, $\omega$ es el peso o inercia que
-se ejerce sobre la partícula que determina en buena medida su ``movimiento'', $\varphi_p$ y $\varphi_g$ son dos constantes positivas. Estas tres últimas variables, junto con el tamaño $s$ del enjambre o población y el máximo de iteraciones $maxGen$ establecido -que en este caso funge como condición de terminación, pero puede ser sustituido por otro que se considere más conveniente-, son parte de los parámetros que afectan el comportamiento de la heurística y que deben ser explorados durante la experimentaación para mejores (y reproducibles) resultados.
+se ejerce sobre la partícula que determina en buena medida su ``movimiento'', $\varphi_p$ y $\varphi_g$ son dos constantes positivas. Estas tres últimas variables, junto con el tamaño $s$ del enjambre o población y el máximo de iteraciones $maxGen$ establecido -que en este caso funge como condición de terminación, pero puede ser sustituido por otro que se considere más conveniente-, son parte de los parámetros que afectan el comportamiento de la heurística y que deben ser explorados durante la experimentaación para mejores (y reproducibles) resultados.\\
 
 Como ya había mencionado, deben hacerse un par de cambios a la versión original, considerando que
 por ejemplo, no podemos sumar el vector de posición $p_i \in \{0,1\}^n$ con el vector de velocidad
@@ -116,9 +120,228 @@ Es por ello, que tanto la actualización de la velocidad como de la posición de
     \end{cases*}
 \end{equation}
 
+Donde $r_{i,j} \in \mathbb{R}$ es un número pseudo-aleatorio entre [0,1].
+
 \section{Especificación}
-\subsection{Diseño}
-\subsection{Implementación}
-\subsection{Experimentacion} %instancias
+En la presente sección presentaré las herramientas utilizadas para la construcción del sistema, el
+diseño utilizado para el código junto con la estrategía general utilizada para la implementación y finalmente algunas de las instancias que se calcularon como entrada de la heurística.
+
+\subsection{Herramientas}
+El sistema consta de los siguientes componentes:
+\begin{itemize}
+\item \textbf{Lenguaje de programación:} Scala 2.12.1
+\item \textbf{Sistema de construcción:} SBT (\textit{Scala Build Tool}) 0.13.13
+\item \textbf{Documentación:} ScalaDoc 2.12.1
+\item \textbf{Pruebas unitarias:} ScalaTest 3.0.1
+\item \textbf{Control de versiones:} Para mantener el control de versiones se utilizó Git 2.11.0 y el repositorio en línea se encuentra alojado en GitHub.
+\end{itemize}
+\subsubsection*{Estructura}\label{sec:e}
+El proyecto está organizado con la jerarquía de directorios que se
+especifica para proyectos de \textit{SBT} (el sistema de construcción).
+El árbol desde el directorio raíz, debe verse como:
+\begin{verbatim}
+    PSO-AGP/
+    ├── build.sbt
+    ├── doc/
+    ├── instances/
+    ├── lib/
+    ├── lib_managed/
+    ├── project/
+    ├── README.md
+    └── src/
+\end{verbatim}
+
+En la carpeta \textbf{doc}/, se encuentra este documento que estás
+leyendo, y su código fuente en \LaTeX. \\
+
+En la carpeta de \textbf{lib}/, se incluyen las bibliotecas externas al sistma de
+construcción y al lenguaje de programación de las que depende el
+proyecto. Para este proyecto en particular tenía contemplado utilizar \textit{JavaFX} o en su
+defecto \textit{ScalaFX} para una interfaz gráfica interactiva, sin embargo aún no hay implementación lista para tal propósito.\\
+
+En el directorio \textbf{instances}/, se encuentran las instancias de entrada del sistema. Archivos
+con terminación $.pol$, en referencia a la palabra polígono y un subdirectorio \textbf{solutions}/,
+con imágenes en formato $SVG$ producidas al termino de cada ejecución, que deben poseer el mismo
+nombre que la instancia de la que provienen. Presentaré el formato de las instancias en la última
+sección que corresponde a la experimentación con dichos archivos (Sección \ref{sec:m}).\\
+
+Todo el código fuente referido a la implementación de la heurística
+se encuentr en el directorio \textbf{src}/. Desde ahí es posible exploar
+el código. Es importante recalcar que se incluye una carpeta para código
+escrito en \textit{Java}, sin embargo, se encontrará vacía, pues la
+implementación está realizada por completo con la sintáxis de \textit{Scala}. Hay dos subdirectorios en dicha sección, pero lo retomaremos más
+adelante en diseño (Sección \ref{sec:c}).\\
+
+En \textbf{project} están definidas las dependencias del proyecto en un
+archivo de nombre \textbf{Dependencies.scala}, donde se definen las características del sistema de construcción (puede señalarse, por ejemplo, una versión específica de \textit{SBT} que será descargada en cuanto se inicialice el proyecto por la versión actual que tenga el sistema). Asimismo pueden agregarse todas las dependencias que sean necesarias, por el momento sólo se define la de \textit{ScalaTest} para pruebas unitarias.\\
+
+
+\subsection{Diseño}\label{sec:c}
+Como se mencionaba en la sección anterior, la implementación está dividida en dos paquetes principales, subdirectorios del paquete raíz de código fuente de \textit{Scala}.
+\begin{verbatim}
+    src/main/scala/
+    ├── AGP/
+    ├── BPSO/
+    ├── Controlador.scala
+    ├── Main.scala
+    └── SVG.scala
+\end{verbatim}
+
+El paquete \textbf{AGP} contiene todo los referente al modelado de polígonos, mientras que \textbf{BPSO}\footnote{Se refiere a \textit{Binary Particle Swarm Optimization}} contiene todas las implementaciones necesarias para la heurística.
+A diferencia del proyecto 1, he decidido no hacer \textit{traits} previo al modelado, pues resultaban
+altamente dependientes del problema, por lo que una modularización para cada componente de la heurística me pareció suficiente. Aunque claro, conserva cierto parecido con la diligencia de ese primer proyecto.
+
+\begin{multicols}{2}
+\begin{enumerate}
+\item CTerminacion.scala
+\item FuncionDeCosto.scala
+\item GeneradorVerificador.scala
+\item Enjambre.scala
+\item BPSO.scala
+\item Particula.scala
+
+\item Poligono.scala
+\item Punto.scala
+\end{enumerate}
+\end{multicols}
+
+Al respecto de los archivos libres en la carpeta, como su nombre indica \textit{Controlador.scala}
+es el código encargado de iniciar la ejecución de la heurística con la entrada provista, \textit{Main.scala} es el código encargado de la interfaz de usuario para el uso del sistema y \textit{SVG.scala}
+una herramienta de dibujo para las instancias (los polígonos). 
+Para información más detallada de la implementación, favor de revisar
+\textit{target/scala-2.12/api/}\textbf{index.html} con la \textit{API} generada por \textit{ScalaDoc}.
+
+\subsection{Función de costo}
+\subsection{Experimentacion}\label{sec:m} %instancias
+\subsubsection*{Archivo de configuración}
+Dentro de la carpeta de \textbf{instances}/ he incluído algunas de las instancias que probé para el sistema, ya con el formato requerido para la interfaz de usuario. Todo archivo de entrada debe contar
+en su primera línea con 6 argumentos separados por comas y \underline{sin espacios}, en el siguiente orden
+\begin{enumerate}
+\item La semilla para el generador de números pseudoaleatorios
+\item El tamaño del enjambre, i.e., el número de partículas de la población
+\item El máximo número de iteraciones
+\item $\omega$, el peso o la inercia constante que se ejerce sobre las partículas
+\item $\varphi_p$, el factor de influencia de la mejor posición de la partícula
+\item $\varphi_g$, el factor de influencia de la posición de la mejor partícula en el enjambre
+\end{enumerate}
+Es decir que la primera línea debe tener la siguiente sintáxis:
+\begin{verbatim}
+[semilla],[tamaño_enjambre],[max_iter],[omega],[phi],[phi2]
+\end{verbatim}
+
+Las siguientes líneas deben corresponder a un vértice del polígono, siendo cada i-ésimo punto adyacente con
+el (i+1)-ésimo, por supuesto módulo n, es decir que el primero es adyacente con el último.
+Cada vértice debe constar de una coordenada $x$ y una coordenada $y$ en $(x,y) \in \mathbb{R}^2$,
+separadas por una coma y sin espacios, sin parentesis ni nada más que un salto de línea luego de la $y$. 
+
+\begin{verbatim}
+                      x,y
+                      x2,y2
+                      x3,y3
+                      ...
+\end{verbatim}
+
+
+A continuación se encuentran algunos ejemplos de las instancias más relevantes con los parámetros
+para hallar la mejor solución hasta el momento del sistema.
+\begin{multicols}{2}
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=.5\textwidth]{peine}
+  \caption{Solución factible a instancia \textit{peine.pol}.}
+\end{figure}
+\texttt{
+\begin{enumerate}
+\item Semilla = 1
+\item Tamaño del enjambre = 100
+\item Máximo de iteraciones = 100
+\item $\omega$ = , $\varphi_p$ = ,$\varphi_g$ = 0.1, 0.1, 0.1
+\end{enumerate}
+}
+\end{multicols}
+
+\begin{multicols}{2}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=.3\textwidth]{galeria}
+  \caption{Solución factible a instancia \textit{galeria.pol}.}
+\end{figure}
+\texttt{
+\begin{enumerate}
+\item Semilla = 23
+\item Tamaño del enjambre = 2000
+\item Máximo de iteraciones = 100
+\item $\omega$ = -1.5, $\varphi_p$ = 0.0003,$\varphi_g$ = 0.004 
+\end{enumerate}
+}
+\end{multicols}
+
+\begin{multicols}{2}
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=.4\textwidth]{edificio}
+  \caption{Solución factible a instancia \textit{StSerninH.pol}.}
+\end{figure}
+\texttt{
+\begin{enumerate}
+\item Semilla = 1
+\item Tamaño del enjambre = 10000
+\item Máximo de iteraciones = 100
+\item $\omega$ = -1.2, $\varphi_p$ = 0.0001 ,$\varphi_g$ = 0.01
+\end{enumerate}
+}
+\end{multicols}
+
 \section{Manejo del sistema} %compilacion y ejecucion
+\subsubsection*{Descarga del proyecto}
+El proyecto se encuetntra alojado en línea en \textit{GitHub}, para
+descargarlo basta ejecutar \textit{Git} en cualquier directorio del
+sistema de archivos.
+\begin{verbatim}
+    $ git clone https://github.com/Pernath/PSO-AGP.git
+\end{verbatim}
+Se creará un directorio con la estructura definida en la sección \ref{sec:c}.
+\subsubsection*{Compilación y ejecución}
+Para las operaciones siguientes se supone que el sistema operativo ya cuenta con el sistema de construcción \textit{sbt} instalado.\\
+
+\noindent
+En primer lugar llamamos al sistema de construcción, que buscará el
+archivo \textbf{build.sbt} y establecerá la ruta actual como la ruta
+del proyecto.
+\begin{verbatim}
+    [user@host PSO-AGP]$ sbt
+\end{verbatim}
+Esto nos llevará a un \textit{prompt} desde el que podremos llamar
+los siguientes comandos de acuerdo a lo que necesitemos.
+
+Para compilar el proyecto y verificar que todo está listo.
+\begin{verbatim}
+    > compile
+\end{verbatim}
+Posteriormente, será posible ejecutar el programa con el archivo de configuración como argumento.
+\begin{verbatim}
+    > run conf.txt
+\end{verbatim}
+Este archivo debe cumplir el formato especificado en \ref{sec:m}.
+\subsubsection*{Empaquetado}
+Una manera de empacar la implementación es ejecutar el siguiente comando:
+\begin{verbatim}
+    > package
+\end{verbatim}
+Sin embargo, este no incluirá las dependencias externas en el \textit{JAR} generado bajo la ruta \textit{target/scala-2.12/}\textbf{AGP.jar}, por lo que no será portátil y dependerá \underline{siempre} de la estructura de directorios del sistema.
+
+Por fortuna, también incluí la opción para generar un \textit{stand-alone JAR} que nos permitirá mover líbremente el ejecutable de \textit{Java} y ejecutarlo desde cualquier directorio. Esto se logra con el
+siguiente comando y podrá encontrarse el ejecutable en la misma dirección mencionada anteriormente:
+\begin{verbatim}
+    > assembly
+\end{verbatim}
+Este también ejecutará las pruebas unitarias incluídas en \textbf{src/test/}.
+
+\subsubsection*{JAR}
+Para ejecutar el resultado del ensamblaje, debemos ubicar el archivo \textit{JAR} en la carpeta mencionada.
+\begin{verbatim}
+    [user@host scala-1.12]$ java -jar AUTSP.jar conf.txt
+\end{verbatim}
+Es importante recordar que este paquete será bastante más rápido en ejecución que realizando un \textit{run} sobre el ``prompt'' de $sbt$.
 \end{document}
