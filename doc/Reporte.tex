@@ -6,6 +6,8 @@
 \usepackage[utf8]{inputenc}
 \usepackage[spanish,activeacute]{babel}
 \usepackage{mathtools}
+\DeclarePairedDelimiter\ceil{\lceil}{\rceil}
+\DeclarePairedDelimiter\floor{\lfloor}{\rfloor}
 \usepackage{amssymb}
 \usepackage{enumerate}
 \usepackage{tabularx}
@@ -27,16 +29,16 @@
 \date{Heurísticas de optimización combinatoria 2017-2\\ Facultad de Ciencias UNAM}
 \begin{document}
 \maketitle
-Como segundo proyecto del seminario, decidí implementar el problema de la galería de arte\footnote{} en su
+Como segundo proyecto del seminario, decidí implementar el problema de la galería de arte\footnote{Art Gallery Problem} en su
 versión con guardias para los vértices de un polígono simple, junto con la heurística de optimización por
-enjambre de partículas\footnote{} en su versión binaria para la elección de dichos guardias. En las siguientes secciones abordaré algunos conceptos
+enjambre de partículas\footnote{Particle Swarm Optimization} en su versión binaria para la elección de dichos guardias. En las siguientes secciones abordaré algunos conceptos
 importantes para la implementación que realicé, tanto de la heurística, como del problema de mi elección; asimismo, presentaré algunos detalles sobre los componentes de mi sistema, las
 entradas y la experimentación a la que lo he sometido hasta el momento. Por último, al final del documento proporciono las instrucciones y herramientas necesarias para construir el sistema y manejarlo con éxito.
 \section{Preliminares}
 \subsection{Problema de la galería de arte}
 El \textit{Problema de la galería de arte} -también conocido como problema del museo-, se puede fácilmente explicar como un problema común en la vida real: Para la disposición de guardias de seguridad en una
 galería de arte, encontrar una configuración en la que toda el área de la galería esté resguardada por un número mínimo de guardias. Este problema vio la luz en el año 1973, cuando el matemático estadounidense Victor Klee, inquirió a la comunidad científica sobre cuántos guardias han de ser necesarios para vigilar un polígono de $n$ vértices. Por el momento diremos que un polígono está vigilado si para todo $p \in P$, el segmento de línea formado por
-$g \in G$ y $p$ se mantiene \textit{dentro} del polígono, donde $P$ es el conjunto de los puntos en el plano dentro del polígono y $G$ un conjunto de puntos en el plano. En respuesta a la interrogante, Václav Chvátal, propuso propuso y demostró un teorema para este problema en el que se establecía una cota superior de $floor \frac{n}{3}$ del mínimo número de guardias \textbf{necesarios} para vigilar un polígono de $n$ vértices. Es
+$g \in G$ y $p$ se mantiene \textit{dentro} del polígono, donde $P$ es el conjunto de los puntos en el plano dentro del polígono y $G$ un conjunto de puntos en el plano. En respuesta a la interrogante, Václav Chvátal, propuso propuso y demostró un teorema para este problema en el que se establecía una cota superior de $\floor{\frac{n}{3}}$ del mínimo número de guardias \textbf{necesarios} para vigilar un polígono de $n$ vértices. Es
 decir que no siempre es necesario ese número de guardias pero siempre es suficiente. Sin embargo, esta cota sugiere que las soluciones factibles que permanecen cercanas a la suficiencia, siguen estando muy alejadas de
 una configuración óptima para los guardias. El problema de hallar tal configuración pertenece a la clase de complejidad \textit{NP-difícil}, incluso para polígonos simples. %cite{}.
 
@@ -211,7 +213,35 @@ una herramienta de dibujo para las instancias (los polígonos).
 Para información más detallada de la implementación, favor de revisar
 \textit{target/scala-2.12/api/}\textbf{index.html} con la \textit{API} generada por \textit{ScalaDoc}.
 
-\subsection{Función de costo}
+\subsection{Implementación}
+La implementación de la heurística está construida como se explica en \ref{alg:pso}, donde el vector
+de posición binario de una partícula refiere a una configuración de guardias en los vértices del
+polígono. Si el vector en la posición $i$ esta asignado como verdadero, entonces hay un guardia
+en el i-ésimo vértice del polígono.  
+
+\subsubsection*{Función de costo}
+La función de costo es un trabajo en proceso, puesto que aún es necesario analizar la experimentación
+y no he podido encontrar un trabajo previo específico para este problema que signifique una base teórica fuerte para sustentar su idoneidad. Sin embargo, ha probado su utilidad para las instancias propuestas, permitiendo encontrar resultados factibles al menos menores a la cota superior del número de guardias.
+Para presentarla, es preciso señalar que en la implementación, todo objeto instancia de la clase partícula, posee, entre otros atributos fundamentales, un arreglo de valores $double$, de la misma longitud que su vector de posición. Para cada entrada $i$ del arreglo, refiere al número de guardias para los que es visible el i-ésimo vértice del polígono en esa configuración de guardias propuesta por esa partícula. Dado que no consideré conveniente calificar a las
+partículas directamente por la cantidad de guardias que poseen porque eventualmente llegaría a soluciones en definitiva no factibles, la oportunidad de minimización se realiza considerando ese arreglo de visiblidad, como principal factor.
+
+Sea $s \in E$, una partícula del enjambre, $nG(s)$, el número de guardias en la posición de
+la partícula y $M$ su arreglo de visibilidad, la función de costo estará definida como:
+\begin{equation}
+  f(s) = \frac{nG(s)}{n} \cdot \sum_{i = 0}^{n-1} M_s(i) 
+\end{equation}
+Es claro que el primer factor entre menor número de guardias, permitirá que la evaluación sea menor,
+sin embargo, si tenemos por ejemplo una configuración con 0 guardias, la función de costo evaluaría
+a 0, con lo que se complica el objetivo. Es por ello que este arreglo de visibilidad debe tener en todas sus entradas, previamente a la ejecución de las iteraciones, valores superiores al máximo valor de
+vigilantes por punto, que por el momento está implementado como $M(i) = (n+1)*99$ al momento de su
+inicialización. No es hasta que el i-ésimo punto es visible para algún guardia que $M(i)$ toma valor 1,
+e irá incrementando conforme aparezcan nuevos guardias en la configuración que puedan vigilarlo, o bien
+decrementando en caso de que cambie la configuración y pierda vigilantes. En caso de que llegue a 0
+en ese decremento, se ``reinicializará'' esa posición en el arreglo de visibilidad al valor propuesto de inicio. Podemos ver entonces que $1 \geq M(i) \leq n$ o $M(i) = (n+1)*99$.
+
+Se espera que con esta función de costo, se preserve la relación de orden entre las partículas y sea
+posible decidir un camino adecuado para continuar la búsqueda.
+
 \subsection{Experimentacion}\label{sec:m} %instancias
 \subsubsection*{Archivo de configuración}
 Dentro de la carpeta de \textbf{instances}/ he incluído algunas de las instancias que probé para el sistema, ya con el formato requerido para la interfaz de usuario. Todo archivo de entrada debe contar
@@ -250,14 +280,14 @@ para hallar la mejor solución hasta el momento del sistema.
   \includegraphics[width=.5\textwidth]{peine}
   \caption{Solución factible a instancia \textit{peine.pol}.}
 \end{figure}
-\texttt{
+
 \begin{enumerate}
 \item Semilla = 1
 \item Tamaño del enjambre = 100
 \item Máximo de iteraciones = 100
 \item $\omega$ = , $\varphi_p$ = ,$\varphi_g$ = 0.1, 0.1, 0.1
 \end{enumerate}
-}
+
 \end{multicols}
 
 \begin{multicols}{2}
@@ -267,14 +297,14 @@ para hallar la mejor solución hasta el momento del sistema.
   \includegraphics[width=.3\textwidth]{galeria}
   \caption{Solución factible a instancia \textit{galeria.pol}.}
 \end{figure}
-\texttt{
+
 \begin{enumerate}
 \item Semilla = 23
 \item Tamaño del enjambre = 2000
 \item Máximo de iteraciones = 100
 \item $\omega$ = -1.5, $\varphi_p$ = 0.0003,$\varphi_g$ = 0.004 
 \end{enumerate}
-}
+
 \end{multicols}
 
 \begin{multicols}{2}
@@ -344,4 +374,41 @@ Para ejecutar el resultado del ensamblaje, debemos ubicar el archivo \textit{JAR
     [user@host scala-1.12]$ java -jar AUTSP.jar conf.txt
 \end{verbatim}
 Es importante recordar que este paquete será bastante más rápido en ejecución que realizando un \textit{run} sobre el ``prompt'' de $sbt$.
+
+\newpage
+\begin{thebibliography}{99}
+
+\bibitem{arora}
+  Arora, S.,  Barak, B. 
+  \emph{Computational complexity: a Modern Approach.}
+  Beijing: World Publishing Corporation.
+  2012.
+\bibitem{reza}
+  Reza, N., Mohades, A.,
+  \emph{Solving minimum-vertex guard in art-gallery problem by a new heuristic algorithm}
+  \href{http://scholarly-journals.com/sjmcs/archive/2013/June/pdf/Nami\%20and\%20Mohades.pdf}
+       {http://scholarly-journals.com/},
+       Department of Computer Science and Mathematics,
+       Amirkabir University of Technology,
+       Tehran, Iran.
+       2013.
+     \bibitem{amit}
+       Amit, Y., Mitchell, J., Packer, E.,
+       \emph{Locating guards for visibility coverage of polygons}.
+       \href{http://researcher.ibm.com/researcher/files/il-ELIP/ws-ijcga.pdf}
+            {http://researcher.ibm.com/},
+            International Journal of Computational Geometry \& Applications, 
+            World Scientific Publishing Company,
+            2012.
+          \bibitem{reza}
+            Ahmadieh, G., 
+            \emph{A Novel Binary Particle Swarm Optimization }.
+            \href{http://zeus.inf.ucv.cl/~bcrawford/MII-748-METAHEURISTICAS/Papers_BinaryMH/A\%20novel\%20BPSO.pdf}
+                 {http://zeus.inf.ucv.cl/},
+                 Proceedings of the 15th Mediterranean Conference on Control \& Automaton,
+                 Athens, Greece.
+                 
+                 2007.
+\end{thebibliography}
+
 \end{document}
